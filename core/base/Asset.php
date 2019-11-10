@@ -9,8 +9,17 @@ class Asset implements AssetInterface
 {
     private $assets;
 
-    public function add(string $asset, string $position = '') : AssetInterface
+    /**
+     * @param string $asset
+     * @param array $options ['position' => header/footer, priority => int, tagAttrs => [attr => value]]
+     * @return AssetInterface
+     * @throws Exception
+     */
+    public function add(string $asset, array $options = []) : AssetInterface
     {
+        $position = $options['position'];
+        $priority = $options['priority'] ?: 100;
+
         if (preg_match('~\.js$~', $asset)) {
             // скрипты по умолчанию в футере
             $position = $position ?: static::FOOTER;
@@ -30,7 +39,7 @@ class Asset implements AssetInterface
             $this->invalidPosition();
         }
 
-        $this->assets[$position][$type][] = $asset;
+        $this->assets[$position][$type][$priority][] = $asset;
         return $this;
     }
 
@@ -50,24 +59,40 @@ class Asset implements AssetInterface
         $cssCollection = $this->assets[$position]['css'];
         if (is_array($cssCollection) && count($cssCollection))
         {
-            foreach ($cssCollection as $style)
+            ksort($cssCollection);
+            array_walk($cssCollection, function ($priorityCollection) use (&$css)
             {
-                $css .= "<link rel='stylesheet' href='$style'>\n";
-            }
+                foreach ($priorityCollection as $style)
+                {
+                    $css .= "<link rel='stylesheet' href='$style'>\n";
+                }
+            });
         }
+
         $jsCollection = $this->assets[$position]['js'];
         if (is_array($jsCollection) && count($jsCollection))
         {
-            foreach ($jsCollection as $script) {
-                $scripts .= "<script src='$script'></script>\n";
-            }
+            ksort($jsCollection);
+            array_walk($jsCollection, function ($priorityCollection) use (&$scripts)
+            {
+                foreach ($priorityCollection as $script)
+                {
+                    $scripts .= "<script src='$script'></script>\n";
+                }
+            });
         }
+
         $stringCollection = $this->assets[$position]['string'];
         if (is_array($stringCollection) && count($stringCollection))
         {
-            foreach ($stringCollection as $string) {
-                $strings .= $string . "\n";
-            }
+            ksort($stringCollection);
+            array_walk($stringCollection, function ($priorityCollection) use (&$strings)
+            {
+                foreach ($priorityCollection as $string)
+                {
+                    $strings .= $string . "\n";
+                }
+            });
         }
 
         return $strings.$css.$scripts;

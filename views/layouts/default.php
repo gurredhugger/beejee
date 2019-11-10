@@ -5,9 +5,9 @@ use app\core\base\Asset;
 /** @var $content */
 
 app::$assets
-    ->add('css/bootstrap.min.css')
-    ->add('js/jquery.min.js')
-    ->add('js/bootstrap.min.js');
+    ->add('css/bootstrap.min.css', ['priority' => 1])
+    ->add('js/jquery.min.js', ['priority' => 1])
+    ->add('js/bootstrap.min.js', ['priority' => 2]);
 ?>
 
 <!doctype html>
