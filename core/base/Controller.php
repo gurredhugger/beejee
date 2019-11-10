@@ -10,6 +10,7 @@ use Exception;
 
 abstract class Controller implements ControllerInterface
 {
+    public $layout;
     /**
      * @param string $view view name
      * @param array $data variables that will be available in the view
@@ -24,8 +25,8 @@ abstract class Controller implements ControllerInterface
         }
 
         $rootDir = app::$config['ROOT_DIR'];
-        $viewFile = $rootDir . Controller::class . '/' . $view . '.php';
-
+        $controllerCode = preg_replace("~Controller~", "", array_pop(explode('\\', static::class)));
+        $viewFile = $rootDir . 'views/' . strtolower($controllerCode) . '/' . $view . '.php';
         if (file_exists($viewFile))
         {
             $data = array_merge($data, ['controller' => &$this]);

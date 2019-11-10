@@ -1,9 +1,2 @@
 {
-  "autoload": {
-    "classmap": [
-      "core\\.",
-      "controllers\\.",
-      "models\\."
-    ]
-  }
 }
