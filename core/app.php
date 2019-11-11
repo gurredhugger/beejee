@@ -108,7 +108,8 @@ class app
             {
                 $classPath[0] = trim(static::$config['ROOT_DIR'], DIRECTORY_SEPARATOR);
 
-                $classFilename = implode(DIRECTORY_SEPARATOR, $classPath) . '.php';
+                $classFilename = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $classPath) . '.php';
+
                 if (file_exists($classFilename)) {
                     include_once $classFilename;
                 }
@@ -116,7 +117,7 @@ class app
         });
     }
 
-    public static function m (string $file, string $m, array $vars = []) : string
+    public static function m (string $file, string $m, array $vars = [])
     {
         $langFile = static::$config['ROOT_DIR'] . 'messages/' . static::$config['lang'] . '/' . $file . '.php';
         if (file_exists($langFile))
